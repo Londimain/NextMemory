@@ -1,18 +1,14 @@
-using System.Collections;
-using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 using UnityEngine;
 
 public class LoadingScene : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+  public string SceneToLoad;//сцена которая будет загружаться
+  public GameObject loadScreen;//для хранения экрана загрузки
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+  public void Load()
+  {
+    loadScreen.SetActive(true);
+    SceneManager.LoadScene(SceneToLoad);
+  }
 }
