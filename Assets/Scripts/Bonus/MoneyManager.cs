@@ -110,7 +110,6 @@ void OnTriggerStay2D(Collider2D collider)
                     Timer.text = "готово";
                     return;
                 }
-                
                 ulong diff = ((ulong)DateTime.Now.Ticks - lastOpen);
                 ulong m = diff / TimeSpan.TicksPerMillisecond;
                 float seconleft = (float)(msToWait - m) / 1000.0f;
@@ -136,8 +135,6 @@ void OnTriggerStay2D(Collider2D collider)
             time = 0;
         }
         }
-
-
 //таймер авто дробавления монет без счётчика ================
         time2 -= Time.deltaTime;//таймер авто добавления монет
         moneyTextSBOR.text = "" + moneySBOR;
