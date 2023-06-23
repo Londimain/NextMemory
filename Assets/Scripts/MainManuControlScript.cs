@@ -11,6 +11,8 @@ public class MainManuControlScript : MonoBehaviour
     public List <Button> buttonsList;
 	public Button level02Button, level03Button, level04Button, level05Button, level06Button;
 	int levelPassed;
+	public GameObject Zagruzka;//для карутины перед загрузкой уровня
+	public float timeDelay = 5f;//для карутины перед загрузкой уровня 
 	//private int money;
 	//public TextMeshProUGUI moneyText2;
 	public static MainManuControlScript Instance { get; set; }
@@ -62,12 +64,43 @@ switch (levelPassed)
 }
 public void Continue()
 {
+	//StartCoroutine(ToggleObjectWithDelay());//для карутины перед загрузкой уровня
+
 	Button lastActiveButton = null;
 	for(int i = buttonsList.Count - 1; i >= 0; i--)
 	{Button button = buttonsList[i];
 	if(button.interactable){button.onClick.Invoke();break;}}
 	if(lastActiveButton != null){lastActiveButton.Select();}
 }
+
+
+/*
+public void LoadObject(string path)
+{
+	StartCoroutine(LoadObjectAsync(path));
+}
+IEnumerator LoadObjectAsync(string path)
+	{
+        var operation = Resources.LoadAsync<GameObject>(path);
+		while(!operation.isDone)
+		{
+			Continue();
+			yield return null;
+		}
+		Zagruzka = operation.asset as GameObject;
+	}
+*/	
+/*
+IEnumerator ToggleObjectWithDelay()//для карутины перед загрузкой уровня
+{
+    Zagruzka.SetActive(true);
+	yield return new WaitForSeconds(timeDelay);
+	Zagruzka.SetActive(false);
+}
+*/
+
+
+
 public void Continue2()// метод продолжить - работает но использую 
 {
 		if (level02Button.interactable){level02Button.GetComponent<Button>().onClick.Invoke();}
@@ -78,6 +111,7 @@ public void Continue2()// метод продолжить - работает н�
 }
 	public void levelToLoad (int level)
 	{
+        //StartCoroutine(ToggleObjectWithDelay());
 		SceneManager.LoadScene (level);
 	}
 

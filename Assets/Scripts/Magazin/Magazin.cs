@@ -27,14 +27,14 @@ public  class Magazin : MonoBehaviour
         //PlayerPrefs.SetString("lastOpen", lastOpen.ToString());
         SaveLoad.Save3(this);
         RewardButton.interactable = false;
-
-        //это потом
         //moneyBons += money;
     }
     public void  ClickDeleteMoney()
     {
-        money = moneyBons;
-        moneyBons += 0;
+        //money = moneyBons;
+        moneyBons = 0;
+        money = 0;
+        //moneyBons = money;
         lastOpenID2 = ((ulong)DateTime.Now.Ticks);
         SaveLoad.Save3(this);
         RewardButton.interactable = false;

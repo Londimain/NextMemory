@@ -15,7 +15,9 @@ public  class MoneyManager : MonoBehaviour
     //public int SaVeS;
     public int Apple;//яблоки
     public float time;
+    public float time2;
     private float timeStart;
+    private float timeStart2;
     public GameObject Players;//для уничтожения игрока после входа в тригер
     //public TextMeshProUGUI moneyText;
     public TextMeshProUGUI AppleText;
@@ -84,7 +86,8 @@ void OnTriggerStay2D(Collider2D collider)
         }*/
         //========================загрузку сделал по другому
 
-        timeStart = time;
+        timeStart = time;//что бы таймер вернулся в исходное сосояние
+        timeStart2 = time2;//что бы таймер вернулся в исходное сосояние
         SaveData data2 = SaveLoad.Load2(); //Получение данных
 		if(!data2.Equals(null)) //Если данные есть то загружаются и выводятся
 		{
@@ -118,9 +121,8 @@ void OnTriggerStay2D(Collider2D collider)
                 t += ((int)seconleft % 60).ToString("00") + "с";
                 Timer.text = t;
             }
-//таймер дробавления без счётчика ================
-
-        time -= Time.deltaTime;//таймер авто добавления монет
+//таймер дробавления монет при помощи кнопки с методом MoneyButton() без счётчика ================
+        time -= Time.deltaTime;//таймер авто добавления монет     время будет отниматься от настоящего времени(обновляться)
         moneyTextSBOR.text = "" + moneySBOR;
         if (time <=0)
         {
@@ -133,6 +135,17 @@ void OnTriggerStay2D(Collider2D collider)
         {
             time = 0;
         }
+        }
+
+
+//таймер авто дробавления монет без счётчика ================
+        time2 -= Time.deltaTime;//таймер авто добавления монет
+        moneyTextSBOR.text = "" + moneySBOR;
+        if (time2 <=0)
+        {
+            moneySBOR += 5;
+            money += 5;
+            time2 = timeStart2;//время возвращается
         }    
     }
     public void OnTriggerStay2D(Collider2D other)// триггер, реагирует при взаимодействии с ним (при входе игрока в триггер)
@@ -147,19 +160,13 @@ void OnTriggerStay2D(Collider2D collider)
             moneyTextSBOR.text = moneySBOR.ToString();//прописывается в текст
             Destroy(other.gameObject);
         }
-        if (other.gameObject.tag == "Rondom")
-        {
-            moneySBOR += UnityEngine.Random.Range(10,20);//рандомное добавление*/ 
-            //UnityEngine.Random.Range(10,20); - Random.Range(10,20); 
-            Destroy(other.gameObject);
-        }  
         if (other.gameObject.tag == "Apple")
         {
             Apple +=20;
             AppleText.text = Apple.ToString();
             Destroy(other.gameObject); 
         }
-        if (other.gameObject.tag == "Finish")
+        if (other.gameObject.tag == "Finish")//точка финиша
         {
         SaveLoad.Save2(this);//сохранил данные переменных
         Players.gameObject.SetActive (false);//Если грок достиг итоговой точки данного уровня то он уничтожается
@@ -167,21 +174,33 @@ void OnTriggerStay2D(Collider2D collider)
 		LevelControlScript.instance.youWin ();//переходит на следующую сцену
         //if (col.tag == Player && money_player.money >=3) //условие (что бы перейти нужно набрать 3 шт)
         }  
-        if (other.gameObject.tag == "Scull")
+        if (other.gameObject.tag == "Scull")//пройгрыш
         {
         Players.gameObject.SetActive (false);
 		LevelControlScript.instance.youLose ();
         }
-        /*if(GameObject.FindWithTag("Respawn") == null){}*/
+        /*if(GameObject.FindWithTag("Respawn") == null){}*/  //не знаю не проверял в работе но вроде если так писать и нету тега на сцене то будет ошибка
+        if (other.gameObject.tag == "Respawn")//точка сохранения при смерти
+        {
+            
+            
+        }  
+        if (other.gameObject.tag == "Rondom")//его на сцена лвл 1 нету пока что
+        {
+            moneySBOR += UnityEngine.Random.Range(10,20);//рандомное добавление*/
+            money += UnityEngine.Random.Range(10,20);//рандомное добавление*/
+            //UnityEngine.Random.Range(10,20); - Random.Range(10,20); 
+            Destroy(other.gameObject);
+        }
 }
     public void MoneyButton()
     {
-        Bonus.interactable = false;
         moneySBOR += 100;
         money += 100;
         if (time == 0)
         {
            time += timeStart;
         }
+        Bonus.interactable = false;
     }
 }

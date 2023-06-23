@@ -4870,8 +4870,8 @@ MonoBehaviour:
   level04Button: {fileID: 690725027}
   level05Button: {fileID: 675767127}
   level06Button: {fileID: 1659567790}
-  SceneToLoad: Level 1
-  loadScreen: {fileID: 317438683}
+  Zagruzka: {fileID: 317438683}
+  timeDelay: 5
   bar: {fileID: 349867781}
 --- !u!4 &1698624485
 Transform:
