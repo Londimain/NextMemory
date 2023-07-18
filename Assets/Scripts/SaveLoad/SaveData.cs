@@ -13,6 +13,7 @@ public class SaveData
     public int allAmmo;
     public int health;
 	public int money;
+	//public float dmgValue;// скрипт Attack
 	public ulong lastOpen;//таймер
 	public ulong lastOpenID2;//таймер в магазине
 	public float[] position; //В Unity позиция игрока записана с помощью класса Vector3, но его нельзя сериализовать. Чтобы обойти эту проблему, данные о позиции будут помещены в массив типа float.
@@ -42,18 +43,21 @@ public class SaveData
 	{
 		money = character2.money;
 		lastOpen = character2.lastOpen;
-        
 		lastOpenID2 = character2.lastOpenID2;
 	}
     
 	public SaveData(Magazin character3) //Конструктор класса
 	{
 		lastOpenID2 = character3.lastOpenID2;
-
         money = character3.money;
 		lastOpen = character3.lastOpen;
 	}
-     
+	/*
+    //добавил - нужно проверить:
+	public SaveData(Attack chaaracter4)
+	{
+		dmgValue = chaaracter4.dmgValue;
+	}*/
 }
 
 

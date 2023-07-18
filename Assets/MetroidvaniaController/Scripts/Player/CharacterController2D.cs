@@ -2,6 +2,8 @@ using UnityEngine;
 using UnityEngine.Events;
 using System.Collections;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+using TMPro;
 
 public class CharacterController2D : MonoBehaviour
 {
@@ -29,7 +31,37 @@ public class CharacterController2D : MonoBehaviour
 	private float prevVelocityX = 0f;
 	private bool canCheck = false; //For check if player is wallsliding
 
-	public float life = 10f; //Life of the player
+	public float life = 10f; //Life of the player - максимальные жизни
+	public Transform TextSpawn;//добавил для отображения урона на игроке
+//добавил слайдер жизней
+    public Slider hpstat;
+	public GameObject DelPanelDamag;//для удаление папки со слайдером после смерти
+	public TextMeshProUGUI statHP;//текст указывает сколько жизней
+	private bool isOnPlatform = false;// добавил что бы игрок не разворачивался при спрыгивании с платформы
+//[SerializeField] private Vector3 _offset;
+
+  void Start() 
+  {
+    //hpstat = GameObject.Find("SliderDC").GetComponent<Slider>();
+  }
+  void Update()
+  {
+	if(life>0){statHP.text = life.ToString("0");}// добавил отображение жизней над головой
+	if(life<0)
+	{
+		DelPanelDamag.SetActive(false);//для удаления папки со слайдером после смерти
+	}
+	//добавил для отображения жизней в слайдере
+	if(life < 200f)
+	{
+        life += MoneyManager.lifeHP;//добавляет поднятие жизней
+		hpstat.value = life;
+	}
+	if(life > 200f)
+	{
+		life = 200f;
+	}
+  }
 	public bool invincible = false; //If player can die
 	private bool canMove = true; //If player can move
 
@@ -46,12 +78,30 @@ public class CharacterController2D : MonoBehaviour
 
 	public UnityEvent OnFallEvent;
 	public UnityEvent OnLandEvent;
+/*	
+//при нажатии кнопки в низ падает всё что на платформе, ниже есть код нормальный
+//-------------!//для того, что бы игрок мог спрыгивать с платформы
+    public BoxCollider2D Platform;
+    void Update()
+    {
+        if(Input.GetKeyDown(KeyCode.DownArrow))
+        {
+            Platform.isTrigger = true;
+			Invoke("IgnoreLayerOff", 0.5f);
+        }
+	}
+	void IgnoreLayerOff()
+    {
+        Platform.isTrigger = false;
+    }
+//-----------------!
+*/
 
 	[System.Serializable]
 	public class BoolEvent : UnityEvent<bool> { }
 
 	private void Awake()
-	{
+	{   
 		m_Rigidbody2D = GetComponent<Rigidbody2D>();
 		animator = GetComponent<Animator>();
 
@@ -61,10 +111,9 @@ public class CharacterController2D : MonoBehaviour
 		if (OnLandEvent == null)
 			OnLandEvent = new UnityEvent();
 	}
-
-
+	
 	private void FixedUpdate()
-	{
+	{ 
 		bool wasGrounded = m_Grounded;
 		m_Grounded = false;
 
@@ -143,6 +192,7 @@ public class CharacterController2D : MonoBehaviour
 			if (isDashing)
 			{
 				m_Rigidbody2D.velocity = new Vector2(transform.localScale.x * m_DashForce, 0);
+
 			}
 			//only control the player if grounded or airControl is turned on
 			else if (m_Grounded || m_AirControl)
@@ -161,7 +211,7 @@ public class CharacterController2D : MonoBehaviour
 					Flip();
 				}
 				// Otherwise if the input is moving the player left and the player is facing right...
-				else if (move < 0 && m_FacingRight && !isWallSliding)
+				else if (move < 0 && m_FacingRight && !isWallSliding && m_FacingRight)
 				{
 					// ... flip the player.
 					Flip();
@@ -170,6 +220,7 @@ public class CharacterController2D : MonoBehaviour
 			// If the player should jump...
 			if (m_Grounded && jump)
 			{
+				//m_Rigidbody2D.velocity = new Vector2(m_Rigidbody2D.velocity.x, 0); - пробую
 				// Add a vertical force to the player.
 				animator.SetBool("IsJumping", true);
 				animator.SetBool("JumpUp", true);
@@ -185,6 +236,8 @@ public class CharacterController2D : MonoBehaviour
 				m_Rigidbody2D.velocity = new Vector2(m_Rigidbody2D.velocity.x, 0);
 				m_Rigidbody2D.AddForce(new Vector2(0f, m_JumpForce / 1.2f));
 				animator.SetBool("IsDoubleJumping", true);
+				//particleJumpDown.Play();
+				particleJumpUp.Play();
 			}
 
 			else if (m_IsWall && !m_Grounded)
@@ -248,28 +301,100 @@ public class CharacterController2D : MonoBehaviour
 			}
 		}
 	}
-
-
+	/*
+	private void OnCollisionExit2D(Collision2D other)
+	{
+		if(other.gameObject.CompareTag("Platform"))
+		{
+			if(transform.localScale.x>0)
+			{
+				transform.localScale = new Vector3(-1,transform.localScale.y,transform.localScale.z);
+			}
+			else
+			{
+				transform.localScale = new Vector3(1,transform.localScale.y,transform.localScale.z);
+			}
+		}
+	}
+	*/
 	private void Flip()
 	{
-		// Switch the way the player is labelled as facing.
-		m_FacingRight = !m_FacingRight;
-
 		// Multiply the player's x local scale by -1.
+		if(isOnPlatform == false && m_Grounded)//добавил  && m_Grounded что бы при запрыгивании не переворачивался
+		{
+		// Switch the way the player is labelled as facing.
+        m_FacingRight = !m_FacingRight;
 		Vector3 theScale = transform.localScale;
 		theScale.x *= -1;
 		transform.localScale = theScale;
+		//Debug.Log("Разворачивается");
+        //далее для того что бы над головой выравнивался текст дамага и количество
+		if(theScale.x != 1)
+		{
+           statHP.transform.Rotate(0f,-180f,0f);
+		   TextSpawn.transform.Rotate(0f,-180f,0f);
+		}
+		if(theScale.x == 1)
+		{
+           statHP.transform.Rotate(0f,180f,0f);
+		   TextSpawn.transform.Rotate(0f,180f,0f);
+		}
+		}
+		if(isOnPlatform == true)
+		{
+            //Debug.Log("если разворачивается");
+		}
 	}
-
+	//------------------------------------------------
+	private void OnCollisionExit2D(Collision2D collision)//отвечает если спрыгивает то непереворачивается
+	{
+		if(collision.gameObject.CompareTag("Platform"))
+		{
+			isOnPlatform = true;
+		}
+		if(collision.gameObject.CompareTag("Untagged"))
+		{
+           isOnPlatform = true;
+		}
+	}
+	private void OnCollisionEnter2D(Collision2D collision)
+	{
+		if(collision.gameObject.CompareTag("Platform"))
+		{
+			//transform.localScale = originalScale;
+			isOnPlatform = false;
+		}
+		if(collision.gameObject.CompareTag("Untagged"))
+		{
+           isOnPlatform = false;
+		}
+	}
+	//-------------------------------------------------
 	public void ApplyDamage(float damage, Vector3 position) 
 	{
 		if (!invincible)
 		{
 			animator.SetBool("Hit", true);
+
+			damage = Random.Range(10f, 50f);//добавил для рандомного выстрела по врагу
 			life -= damage;
 			Vector2 damageDir = Vector3.Normalize(transform.position - position) * 40f ;
 			m_Rigidbody2D.velocity = Vector2.zero;
 			m_Rigidbody2D.AddForce(damageDir * 10);
+			hpstat.value = life;//добавил для отображения жизней в слайдере
+
+			//добавил для отображения урона на игроке
+			//float textSize = damage * 2;(хотел изменить - вынести go для обновления слайдера)
+            float textSize = damage * 2;
+			//GameObject go = Instantiate (хотел изменить - вынести go для обновления слайдера)
+            GameObject go = Instantiate(Resources.Load("DamageAnimationText"), TextSpawn.localPosition, Quaternion.identity) as GameObject;
+            go.transform.SetParent(TextSpawn.transform, false);
+            go.GetComponent<TMPro.TextMeshProUGUI>().SetText(damage.ToString("F0"));
+            go.name = damage.ToString("F0");
+            //go.GetComponent<TMPro.TextMeshPro>();
+			go.GetComponent<TMPro.TextMeshProUGUI>().fontSize = textSize;
+            Destroy(go, 0.7f);
+            //-----------------------------
 			if (life <= 0)
 			{
 				StartCoroutine(WaitToDead());
@@ -281,7 +406,6 @@ public class CharacterController2D : MonoBehaviour
 			}
 		}
 	}
-
 	IEnumerator DashCooldown()
 	{
 		animator.SetBool("IsDashing", true);

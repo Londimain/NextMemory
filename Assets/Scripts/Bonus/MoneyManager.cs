@@ -10,6 +10,7 @@ using System;//для счетчика====
 
 public  class MoneyManager : MonoBehaviour
 {
+    [NonSerialized]
     public int money;
     public int moneySBOR;
     //public int SaVeS;
@@ -19,12 +20,13 @@ public  class MoneyManager : MonoBehaviour
     private float timeStart;
     private float timeStart2;
     public GameObject Players;//для уничтожения игрока после входа в тригер
-    //public TextMeshProUGUI moneyText;
+    public TextMeshProUGUI moneyText;//общая валюта
     public TextMeshProUGUI AppleText;
     public TextMeshProUGUI moneyTextSBOR;
     public Button Bonus;
     public ulong lastOpenID2;//неиспользую тут но нужен
     public int moneyBons;//неиспользую тут но нужен
+    public static float lifeHP;//жизни игрока
 /*
 //-----------------------------------------не знаю как это работает - но сказали можно задействовать
 private readonly List<string> Respawn = new List<string>();
@@ -85,7 +87,6 @@ void OnTriggerStay2D(Collider2D collider)
             RewardButton.interactable = false;
         }*/
         //========================загрузку сделал по другому
-
         timeStart = time;//что бы таймер вернулся в исходное сосояние
         timeStart2 = time2;//что бы таймер вернулся в исходное сосояние
         SaveData data2 = SaveLoad.Load2(); //Получение данных
@@ -93,9 +94,8 @@ void OnTriggerStay2D(Collider2D collider)
 		{
 		    money = data2.money;
             lastOpen = data2.lastOpen;
-
 		    lastOpenID2 = data2.lastOpenID2;//неиспользую тут но нужен
-		}
+		}       
         Bonus.interactable = false;//кнопка Bonus при старте неактивна
         RewardButton.interactable = false;
     }
@@ -123,6 +123,7 @@ void OnTriggerStay2D(Collider2D collider)
 //таймер дробавления монет при помощи кнопки с методом MoneyButton() без счётчика ================
         time -= Time.deltaTime;//таймер авто добавления монет     время будет отниматься от настоящего времени(обновляться)
         moneyTextSBOR.text = "" + moneySBOR;
+        moneyText.text = money.ToString();// добавил для того что бы смотреть сохранение денег
         if (time <=0)
         {
             //moneySBOR += 5;
@@ -137,7 +138,7 @@ void OnTriggerStay2D(Collider2D collider)
         }
 //таймер авто дробавления монет без счётчика ================
         time2 -= Time.deltaTime;//таймер авто добавления монет
-        moneyTextSBOR.text = "" + moneySBOR;
+        //moneyTextSBOR.text = "" + moneySBOR;
         if (time2 <=0)
         {
             moneySBOR += 5;
@@ -177,10 +178,16 @@ void OnTriggerStay2D(Collider2D collider)
 		LevelControlScript.instance.youLose ();
         }
         /*if(GameObject.FindWithTag("Respawn") == null){}*/  //не знаю не проверял в работе но вроде если так писать и нету тега на сцене то будет ошибка
+        if (other.gameObject.tag == "HP")//добавление жизней
+        {
+            lifeHP += UnityEngine.Random.Range(10, 50);//добавиляет рандомноое HP персонажу
+            Invoke("lileOFF",0.001f);
+            Destroy(other.gameObject);
+
+        } 
         if (other.gameObject.tag == "Respawn")//точка сохранения при смерти
         {
-            
-            
+                
         }  
         if (other.gameObject.tag == "Rondom")//его на сцена лвл 1 нету пока что
         {
@@ -190,6 +197,10 @@ void OnTriggerStay2D(Collider2D collider)
             Destroy(other.gameObject);
         }
 }
+    public void lileOFF()//через секунду удалятся жизни
+    {
+        lifeHP = 0;
+    }
     public void MoneyButton()
     {
         moneySBOR += 100;

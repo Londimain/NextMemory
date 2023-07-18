@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Ally : MonoBehaviour
 {
@@ -34,6 +35,7 @@ public class Ally : MonoBehaviour
 	private bool doOnceDecision = true;
 	private bool endDecision = false;
 	private Animator anim;
+	public Slider hpstat;
 
 	void Awake()
 	{
@@ -154,8 +156,9 @@ public class Ally : MonoBehaviour
 			damage = Mathf.Abs(damage);
 			anim.SetBool("Hit", true);
 			life -= damage;
+			hpstat.value = life;//добавил для отображения жизней в слайдере
 			transform.gameObject.GetComponent<Rigidbody2D>().velocity = new Vector2(0, 0);
-			transform.gameObject.GetComponent<Rigidbody2D>().AddForce(new Vector2(direction * 300f, 100f)); 
+			transform.gameObject.GetComponent<Rigidbody2D>().AddForce(new Vector2(direction * 300f, 100f));
 			StartCoroutine(HitTime());
 		}
 	}

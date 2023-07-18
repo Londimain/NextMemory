@@ -8,6 +8,12 @@ TagManager:
   - Scool
   - Scull
   - Apple
+  - Enemy
+  - Platform
+  - SliderDC
+  - HP
+  - PiuOn
+  - GROUND
   layers:
   - Default
   - TransparentFX
@@ -15,11 +21,11 @@ TagManager:
   - 
   - Water
   - UI
+  - FonS
+  - Collide
   - 
   - 
-  - 
-  - 
-  - 
+  - Platforms
   - 
   - 
   - 

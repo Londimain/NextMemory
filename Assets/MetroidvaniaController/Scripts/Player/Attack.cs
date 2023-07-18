@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class Attack : MonoBehaviour
 {
-	public float dmgValue = 4;
+	//поменял public float dmgValue = 4;// для рандомного урона поменял
+	private float dmgValue;
 	public GameObject throwableObject;
 	public Transform attackCheck;
 	private Rigidbody2D m_Rigidbody2D;
@@ -30,17 +31,12 @@ public class Attack : MonoBehaviour
     {
 		if (Input.GetKeyDown(KeyCode.X) && canAttack)
 		{
-			canAttack = false;
-			animator.SetBool("IsAttacking", true);
-			StartCoroutine(AttackCooldown());
+			Knopa2();
 		}
 
 		if (Input.GetKeyDown(KeyCode.V))
 		{
-			GameObject throwableWeapon = Instantiate(throwableObject, transform.position + new Vector3(transform.localScale.x * 0.5f,-0.2f), Quaternion.identity) as GameObject; 
-			Vector2 direction = new Vector2(transform.localScale.x, 0);
-			throwableWeapon.GetComponent<ThrowableWeapon>().direction = direction; 
-			throwableWeapon.name = "ThrowableWeapon";
+			Knopa4();
 		}
 	}
 
@@ -52,7 +48,9 @@ public class Attack : MonoBehaviour
 
 	public void DoDashDamage()
 	{
-		dmgValue = Mathf.Abs(dmgValue);
+		//поменял для рандомного урона
+		//dmgValue = Mathf.Abs(dmgValue);
+		dmgValue = Random.Range(1f, 5f);//урон при мече для врага
 		Collider2D[] collidersEnemies = Physics2D.OverlapCircleAll(attackCheck.position, 0.9f);
 		for (int i = 0; i < collidersEnemies.Length; i++)
 		{
@@ -67,4 +65,18 @@ public class Attack : MonoBehaviour
 			}
 		}
 	}
+public void Knopa2()//Для управление кнопками
+{
+	canAttack = false;
+	animator.SetBool("IsAttacking", true);
+	StartCoroutine(AttackCooldown());
+}
+public void Knopa4()
+{
+    animator.SetBool("Piu", true);//добавил анимацию выстрела
+	GameObject throwableWeapon = Instantiate(throwableObject, transform.position + new Vector3(transform.localScale.x * 0.5f,-0.2f), Quaternion.identity) as GameObject; 
+	Vector2 direction = new Vector2(transform.localScale.x, 0);
+	throwableWeapon.GetComponent<ThrowableWeapon>().direction = direction; 
+	throwableWeapon.name = "ThrowableWeapon";
+}
 }

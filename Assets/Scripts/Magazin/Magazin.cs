@@ -19,7 +19,7 @@ public  class Magazin : MonoBehaviour
     public ulong lastOpenID2;
     public ulong lastOpen;//неиспользую тут но нужен
     //private const string saveKey = "mainSave"; //создал ключ для сохранения данных
-    public void  Click()
+    public void Click()
     {
         money += 50;
         moneyBons += 50;
@@ -29,7 +29,7 @@ public  class Magazin : MonoBehaviour
         RewardButton.interactable = false;
         //moneyBons += money;
     }
-    public void  ClickDeleteMoney()
+    public void ClickDeleteMoney()
     {
         //money = moneyBons;
         moneyBons = 0;
@@ -46,7 +46,7 @@ public  class Magazin : MonoBehaviour
         float seconleft = (float)(msToWait - m) / 1000.0f;
         if(seconleft < 0)
         {
-            Timer.text = "готово";
+            Timer.text = "Готово";
             return true;
         }
         return false;
@@ -57,16 +57,13 @@ public  class Magazin : MonoBehaviour
 		if(!data2.Equals(null)) //Если данные есть то загружаются и выводятся
 		{
 		    money = data2.money;
-        
             lastOpen = data2.lastOpen;//неиспользую тут но нужен
 		}
-       
         RewardButton.interactable = false;
         SaveData data3 = SaveLoad.Load3(); //Получение данных
 		if(!data3.Equals(null)) //Если данные есть то загружаются и выводятся
 		{
             lastOpenID2 = data3.lastOpenID2;
-
             lastOpen = data3.lastOpen;//неиспользую тут но нужен
             money = data3.money;//неиспользую тут но нужен
 		}
@@ -80,7 +77,7 @@ public  class Magazin : MonoBehaviour
                 if(isReady())
                 {
                     RewardButton.interactable = true;
-                    Timer.text = "готово";
+                    Timer.text = "Ежедневный бонус";
                     return;
                 }
                 ulong diff = ((ulong)DateTime.Now.Ticks - lastOpenID2);
@@ -94,4 +91,6 @@ public  class Magazin : MonoBehaviour
                 Timer.text = t;
             }
     }
+
+    
 }

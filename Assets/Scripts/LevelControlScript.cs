@@ -57,4 +57,14 @@ public class LevelControlScript : MonoBehaviour {
 	{
 		SceneManager.LoadScene ("MainMenu");
 	}
+/*
+
+	
+//добавил - нужно проверить:
+    public Button ButtonSave;
+    public void LoadDmagHeal()
+    {
+        ButtonSave.onClick.Invoke();
+    }
+*/	
 }

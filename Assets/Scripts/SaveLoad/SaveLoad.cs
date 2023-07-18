@@ -74,4 +74,38 @@ public static void Save2(MoneyManager character2) //Метод для сохра
 			return null; //Если файл не существует, будет возвращено null
 		}
 	}
+
+
+
+
+
+
+
+
+/*
+//--------------------------------------------------------------------
+	//добавил - нужно проверить:
+	private static string pathAtt = Application.persistentDataPath + "/Att.dat";
+	public static void Save4(Attack character4)
+	{
+		FileStream Att = new FileStream (pathAtt, FileMode.Create);
+		SaveData data4 = new SaveData(character4); 
+		formatter.Serialize(Att, data4); 
+		Att.Close();
+	}
+	public static SaveData Load4()
+	{
+		if(File.Exists(pathAtt))
+		{ 
+			FileStream Att = new FileStream(pathAtt, FileMode.Open);
+			SaveData data4 = formatter.Deserialize(Att) as SaveData;
+			Att.Close();
+			return data4;
+		} 
+		else 
+		{
+			return null;
+		}
+	}
+*/
 }

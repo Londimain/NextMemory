@@ -125,4 +125,15 @@ public void Continue2()// метод продолжить - работает н�
 		PlayerPrefs.DeleteAll ();
         //PlayerPrefs.DeleteKey("Cena");
 	}
+    void Update()
+    {
+        if (Input.GetKey("escape"))  // если нажата клавиша Esc (Escape) выполнется метод ExitGame(выход с игры)
+        {
+            ExitGame();
+        }
+    }
+    public void ExitGame()
+    {
+        Application.Quit();
+    }
 }
